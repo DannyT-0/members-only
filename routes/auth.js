@@ -5,7 +5,7 @@ const User = require("../models/user");
 const router = express.Router();
 
 router.get("/signup", (req, res) => {
-	res.render("signup");
+	res.render("signup", { error: null });
 });
 
 router.post("/signup", async (req, res) => {
@@ -23,7 +23,7 @@ router.post("/signup", async (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-	res.render("login");
+	res.render("login", { error: null });
 });
 
 router.post(
@@ -36,8 +36,12 @@ router.post(
 );
 
 router.get("/logout", (req, res) => {
-	req.logout();
-	res.redirect("/");
+	req.logout(function (err) {
+		if (err) {
+			return next(err);
+		}
+		res.redirect("/");
+	});
 });
 
 router.get("/join-club", (req, res) => {

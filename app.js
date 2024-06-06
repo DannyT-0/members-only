@@ -10,10 +10,7 @@ dotenv.config();
 
 const app = express();
 
-mongoose.connect(process.env.MONGODB_URI, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGODB_URI);
 
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
@@ -44,10 +41,16 @@ passport.serializeUser((user, done) => {
 	done(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-	User.findById(id, (err, user) => {
-		done(err, user);
-	});
+passport.deserializeUser(async (id, done) => {
+	try {
+		const user = await User.findById(id).exec();
+		if (!user) {
+			return done(null, false);
+		}
+		return done(null, user);
+	} catch (error) {
+		return done(error);
+	}
 });
 
 app.use("/", require("./routes/index"));

@@ -7,7 +7,7 @@ router.get("/create", (req, res) => {
 	if (!req.isAuthenticated()) {
 		return res.redirect("/auth/login");
 	}
-	res.render("create-message");
+	res.render("create-message", { error: null });
 });
 
 router.post("/create", async (req, res) => {
