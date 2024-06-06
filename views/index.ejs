@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Message Board</title>
+	</head>
+	<body>
+		<h1>Message Board</h1>
+		<% if (user) { %>
+		<p>Welcome, <%= user.firstName %>!</p>
+		<a href="/messages/create">Create a new message</a>
+		<a href="/auth/logout">Logout</a>
+		<% } else { %>
+		<a href="/auth/login">Login</a>
+		<a href="/auth/signup">Sign Up</a>
+		<% } %>
+
+		<h2>Messages</h2>
+		<% messages.forEach(message => { %>
+		<div>
+			<h3><%= message.title %></h3>
+			<p><%= message.text %></p>
+			<% if (user && user.membershipStatus) { %>
+			<p>
+				Author: <%= message.author.firstName %> <%= message.author.lastName %>
+			</p>
+			<p>Date: <%= message.timestamp.toLocaleString() %></p>
+			<% if (user.isAdmin) { %>
+			<form
+				action="/messages/<%= message._id %>/delete"
+				method="POST"
+				style="display: inline"
+			>
+				<button type="submit">Delete</button>
+			</form>
+			<% } %> <% } %>
+		</div>
+		<% }) %>
+	</body>
+</html>
